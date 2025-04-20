@@ -1,0 +1,61 @@
+# Ignorer les fichiers et dossiers inutiles
+
+# Fichiers système ou temporaires
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+*.log
+*.sqlite3
+*.db
+
+# Environnement virtuel Python
+venv/
+env/
+.venv/
+
+# Dépendances et caches
+node_modules/
+pip-cache/
+.tox/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE et éditeurs de code
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Fichiers de configuration locaux
+.env
+.env.local
+.flaskenv
+.secrets
+config.json
+
+# Build et artefacts
+build/
+dist/
+.dockerignore
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+
+# Tests et rapports
+tests/
+reports/
+.coveragerc
+
+# Git et autres outils de versioning
+.git/
+.gitignore
+.github/
+.gitlab-ci.yml
+
+# Autres fichiers non nécessaires
+*.bak
+*.tmp
+*.swp
+*.swo
