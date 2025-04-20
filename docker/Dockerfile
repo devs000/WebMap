@@ -16,32 +16,44 @@
 #
 # Now you can point your browser to http://localhost:8000
 
+
 FROM ubuntu:latest
 
-ENV DEBIAN_FRONTEND noninteractive
+# Variables d'environnement
+ENV DEBIAN_FRONTEND=noninteractive \
+    WKHTMLTOPDF_VERSION=0.12.4
 
-RUN apt-get update && apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-    python3 python3-pip curl wget git wkhtmltopdf libssl-dev vim nmap tzdata
+# Installation des dépendances et configuration initiale
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip curl wget git wkhtmltopdf libssl-dev tzdata nmap \
+    && mkdir -p /opt/xml /opt/notes \
+    && wget -P /opt/ https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz \
+    && tar -xvf /opt/wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz -C /opt/ \
+    && rm -f /opt/wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz \
+    && pip3 install --no-cache-dir Django requests xmltodict \
+    && cd /opt/ && django-admin startproject nmapdashboard \
+    && cd /opt/nmapdashboard && git clone https://github.com/SabyasachiRana/WebMap.git nmapreport \
+    && cd nmapreport && git checkout master \
+    && apt-get autoremove -y && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /opt/xml && mkdir /opt/notes && \
-    wget -P /opt/ https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && \
-    cd /opt/ && tar -xvf /opt/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+# Copie de tous les fichiers nécessaires depuis le répertoire docker
+COPY docker /tmp/docker
 
-RUN pip3 install Django requests xmltodict && \
-    cd /opt/ && django-admin startproject nmapdashboard && cd /opt/nmapdashboard && \
-    git clone https://github.com/SabyasachiRana/WebMap.git nmapreport && \
-    cd nmapreport && git checkout master
+# Déplacement des fichiers vers leurs emplacements finaux
+RUN mv /tmp/docker/settings.py /opt/nmapdashboard/nmapdashboard/settings.py \
+    && mv /tmp/docker/urls.py /opt/nmapdashboard/nmapdashboard/urls.py \
+    && mv /tmp/docker/tzdata.sh /root/tzdata.sh \
+    && mv /tmp/docker/startup.sh /startup.sh \
+    && rm -rf /tmp/docker
 
-RUN cp /opt/nmapdashboard/nmapreport/docker/settings.py /opt/nmapdashboard/nmapdashboard/
-RUN cp /opt/nmapdashboard/nmapreport/docker/urls.py /opt/nmapdashboard/nmapdashboard/
-RUN cp /opt/nmapdashboard/nmapreport/docker/tzdata.sh /root/tzdata.sh
-RUN cp /opt/nmapdashboard/nmapreport/docker/startup.sh /startup.sh
+# Finalisation de la configuration
+RUN cd /opt/nmapdashboard && python3 manage.py migrate \
+    && ln -s /opt/nmapdashboard/nmapreport/token.py /root/token \
+    && chmod +x /root/tzdata.sh /startup.sh /root/token
 
-RUN cd /opt/nmapdashboard && python3 manage.py migrate
-RUN apt-get autoremove -y
-RUN ln -s /opt/nmapdashboard/nmapreport/token.py /root/token
-RUN chmod +x /root/token
-
+# Exposition du port
 EXPOSE 8000
 
+# Point d'entrée
 ENTRYPOINT ["bash", "/startup.sh"]
