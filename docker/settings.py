@@ -1,113 +1,102 @@
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Chemins de base du projet
+# Utilisez cette méthode pour construire des chemins dans le projet.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Paramètres de développement rapide - NON adaptés pour la production
+# Référez-vous à https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
+# pour une liste complète des paramètres de sécurité.
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# AVERTISSEMENT DE SÉCURITÉ : Conservez la clé secrète utilisée en production confidentielle !
 SECRET_KEY = 'rev3rse-notes:_you_should-change_this..._but_webmap_should_run_on_localhost_only..._so_no_problem_here.'
-#             ^^^ -> yes, not safe for production. This is the why you shouldn't expose this app on the internet.
+# ^^^ Cette clé n'est pas sécurisée pour la production. 
+#     Elle ne doit être utilisée que pour un environnement local ou de test.
 
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# AVERTISSEMENT DE SÉCURITÉ : N'exécutez pas avec DEBUG activé en production !
 DEBUG = True
-#       ^^^ leave it active for better understand issues and bug
-#       ^^^ (again, this is a good reason to not expose this app on the internet)
+#       ^^^ Activez DEBUG uniquement pour le développement. 
+#           En production, désactivez-le pour éviter d'exposer des informations sensibles.
 
 ALLOWED_HOSTS = ['*']
-#               ^ keep in mind that this app is not designed to be exposed on the internet. Please don't do it.
+#               ^ Permettre tous les hôtes peut être dangereux.
+#                 Si vous déployez sur un serveur, limitez les hôtes autorisés.
 
-# Application definition
-
+# Définition des applications installées
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'nmapreport',
+    'django.contrib.admin',  # Interface d'administration Django
+    'django.contrib.auth',   # Authentification et gestion des utilisateurs
+    'django.contrib.contenttypes',  # Framework de types de contenu
+    'django.contrib.sessions',      # Gestion des sessions
+    'django.contrib.messages',      # Messages flash pour les utilisateurs
+    'django.contrib.staticfiles',   # Gestion des fichiers statiques
+    'nmapreport',                   # Application principale pour les rapports Nmap
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',        # Sécurité HTTP (headers, etc.)
+    'django.contrib.sessions.middleware.SessionMiddleware', # Gestion des sessions
+    'django.middleware.common.CommonMiddleware',            # Middleware commun (redirections, etc.)
+    'django.middleware.csrf.CsrfViewMiddleware',            # Protection CSRF
+    'django.contrib.auth.middleware.AuthenticationMiddleware', # Authentification des utilisateurs
+    'django.contrib.messages.middleware.MessageMiddleware', # Messages flash
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',# Protection contre le clickjacking
 ]
 
-ROOT_URLCONF = 'nmapdashboard.urls'
+ROOT_URLCONF = 'nmapdashboard.urls'  # Point d'entrée principal pour les URL
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',  # Moteur de templates par défaut
+        'DIRS': [],                                                    # Dossiers supplémentaires pour les templates
+        'APP_DIRS': True,                                              # Recherche automatique des templates dans les apps
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.debug',            # Variables de debug
+                'django.template.context_processors.request',          # Données de la requête
+                'django.contrib.auth.context_processors.auth',         # Contexte d'authentification
+                'django.contrib.messages.context_processors.messages', # Messages flash
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'nmapdashboard.wsgi.application'
+WSGI_APPLICATION = 'nmapdashboard.wsgi.application'  # Point d'entrée WSGI
 
-
-# Database
+# Configuration de la base de données
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/opt/nmapdashboard/db.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3',  # Utilisation de SQLite pour la simplicité
+        'NAME': '/opt/nmapdashboard/db.sqlite3', # Chemin vers la base de données SQLite
     }
 }
 
-
-# Password validation
+# Validation des mots de passe
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',  # Évite les mots de passe similaires aux attributs de l'utilisateur
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',           # Longueur minimale des mots de passe
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',          # Évite les mots de passe courants
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',         # Évite les mots de passe purement numériques
     },
 ]
 
-
-# Internationalization
+# Internationalisation
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
+LANGUAGE_CODE = 'en-us'  # Code de langue par défaut
+TIME_ZONE = 'UTC'        # Fuseau horaire par défaut
+USE_I18N = True          # Activer la traduction internationale
+USE_L10N = True          # Activer la localisation des formats de date et nombre
+USE_TZ = True            # Utiliser les fuseaux horaires
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
+# Fichiers statiques (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
-STATIC_URL = '/static/'
+STATIC_URL = '/static/'  # URL publique pour les fichiers statiques
