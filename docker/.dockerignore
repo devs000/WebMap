@@ -1,60 +1,110 @@
-# Ignorer les fichiers et dossiers inutiles
+# ================================
+# Ignorer les fichiers système et temporaires
+# ================================
 
-# Fichiers système ou temporaires
+# Fichiers Python compilés ou optimisés
 **/__pycache__/
-**/*.pyc
-**/*.pyo
-**/*.pyd
+**/*.py[cod]
+*$py.class
+
+# Byte-compiled / optimized files
+*.pyc
+*.pyo
+*.pyd
+
+# Logs et bases de données locales
 *.log
 *.sqlite3
 *.db
 
-# Environnement virtuel Python
+# ================================
+# Ignorer les environnements virtuels et dépendances
+# ================================
+
+# Environnements virtuels Python
 venv/
 env/
 .venv/
+django-env/
 
-# Dépendances et caches
+# Dépendances Node.js
 node_modules/
+
+# Cache pip et autres fichiers de packaging
 pip-cache/
+.installed.cfg
+*.egg-info/
+*.egg
+develop-eggs/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+build/
+dist/
+
+# ================================
+# Ignorer les artefacts de build et tests
+# ================================
+
+# Rapports de couverture et tests
+htmlcov/
 .tox/
 .coverage
-htmlcov/
-.pytest_cache/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
 
-# IDE et éditeurs de code
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
+# PyInstaller (si utilisé)
+*.manifest
+*.spec
 
-# Fichiers de configuration locaux
+# Sphinx documentation
+docs/_build/
+docs/locale/
+
+# Autres artefacts de build
+target/
+assets/ # Répertoire STATIC_ROOT pour les fichiers statiques générés
+
+# ================================
+# Ignorer les fichiers sensibles
+# ================================
+
+# Données sensibles
+credentials.py
+credentials.pyc
+
+# Fichiers de configuration locale
 .env
 .env.local
 .flaskenv
 .secrets
 config.json
 
-# Build et artefacts
-build/
-dist/
-.dockerignore
-Dockerfile
-docker-compose.yml
-docker-compose.override.yml
+# ================================
+# Ignorer les fichiers IDE et éditeurs
+# ================================
 
-# Tests et rapports
-tests/
-reports/
-.coveragerc
+# IDE et éditeurs de code
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.ipynb_checkpoints
 
-# Git et autres outils de versioning
-.git/
-.gitignore
-.github/
-.gitlab-ci.yml
+# ================================
+# Ignorer les fichiers spécifiques au projet
+# ================================
 
-# Autres fichiers non nécessaires
+# Fichiers PDF générés pour les rapports WebMap
+static/*.pdf
+
+# Autres fichiers inutiles
 *.bak
 *.tmp
 *.swp
