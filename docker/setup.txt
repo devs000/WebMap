@@ -1,3 +1,9 @@
+#!/bin/bash
+
+# Script d'installation et de configuration de WebMap dans un conteneur Docker
+# Ce script automatise le processus de mise en place de WebMap.
+# Assurez-vous d'avoir Docker installé sur votre système avant de l'exécuter.
+
 echo ""
 echo " __          __  _     __  __             "
 echo " \ \        / / | |   |  \/  |            "
@@ -9,21 +15,52 @@ echo "                                   | |    "
 echo "                                   |_|    "
 echo ""
 echo -e "\n[+] Starting WebMap docker setup"
-echo "[+] Creating required dirs"
-mkdir /tmp/webmap 2> /dev/null
-echo "[+] Pull WebMap from docker hub"
+
+# Étape 1 : Création des répertoires nécessaires
+echo "[+] Creating required directories..."
+mkdir -p /tmp/webmap 2>/dev/null
+# `mkdir -p` crée le répertoire s'il n'existe pas déjà, sans générer d'erreur si le dossier existe déjà.
+
+# Étape 2 : Téléchargement de l'image Docker depuis Docker Hub
+echo "[+] Pulling WebMap image from Docker Hub..."
 docker pull rev3rse/webmap
-echo "[+] Remove old WebMap container"
-docker stop webmap 2> /dev/null
-docker rm webmap 2> /dev/null
-echo "[+] Run WebMap container"
-docker run -d --name webmap -h webmap -p 8000:8000 -v /tmp/webmap:/opt/xml rev3rse/webmap
-echo "[+] Configure TimeZone for container"
+# Cette commande télécharge la dernière version de l'image WebMap depuis Docker Hub.
+
+# Étape 3 : Arrêt et suppression du conteneur existant (s'il existe)
+echo "[+] Stopping and removing any existing WebMap container..."
+docker stop webmap 2>/dev/null
+docker rm webmap 2>/dev/null
+# Ces commandes arrêtent et suppriment le conteneur précédent, évitant les conflits lors du démarrage du nouveau conteneur.
+
+# Étape 4 : Démarrage du nouveau conteneur WebMap
+echo "[+] Running the new WebMap container..."
+docker run -d \
+  --name webmap \
+  -h webmap \
+  -p 8000:8000 \
+  -v /tmp/webmap:/opt/xml \
+  rev3rse/webmap
+# `-d` : Exécute le conteneur en arrière-plan (mode détaché).
+# `--name` : Nomme le conteneur "webmap".
+# `-h` : Définit le hostname du conteneur comme "webmap".
+# `-p` : Mappe le port 8000 du conteneur au port 8000 de l'hôte.
+# `-v` : Monte le répertoire local `/tmp/webmap` dans le conteneur à l'emplacement `/opt/xml`.
+
+# Étape 5 : Configuration du fuseau horaire (TimeZone) dans le conteneur
+echo "[+] Configuring TimeZone for the container..."
 docker exec -ti webmap bash /root/tzdata.sh
-echo "[+] Restart container"
+# Cette commande exécute le script `tzdata.sh` à l'intérieur du conteneur pour configurer le fuseau horaire.
+
+# Étape 6 : Redémarrage du conteneur pour appliquer les modifications
+echo "[+] Restarting the container to apply changes..."
 docker restart webmap
-echo "[+] Done"
-echo -e "\nNow you can point your browser to http://localhost:8000"
+# Le redémarrage permet de s'assurer que toutes les configurations sont appliquées correctement.
+
+# Étape 7 : Finalisation
+echo "[+] Setup completed successfully!"
+echo ""
+echo "Now you can point your browser to http://localhost:8000"
 echo "!! DO NOT EXPOSE WebMap TO THE INTERNET, BE SMART !!"
-echo "Please, take few seconds to support this project on GitHub"
-echo -e "https://github.com/Rev3rseSecurity/WebMap\n"
+echo "Please, take a moment to support this project on GitHub:"
+echo "https://github.com/Rev3rseSecurity/WebMap"
+echo ""
